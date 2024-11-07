@@ -1,28 +1,36 @@
-use std::net::{TcpStream, UdpSocket};
+use std::net::{SocketAddr, TcpStream, UdpSocket};
+use super::addrs;
 
 pub struct Server {
     udp_sock: UdpSocket,
-    connections: Vec<TcpStream>,
+    _connections: Vec<TcpStream>,
     buf: Vec<u8>,
 }
 
 impl Server {
     pub fn new() -> Self {
-        let udp_sock = UdpSocket::bind(&super::addrs::SOCKED_ADDR).unwrap();
+        let udp_sock = UdpSocket::bind(addrs::SOCKET_ADDR).unwrap();
         udp_sock
-            .join_multicast_v4(&super::addrs::IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
+            .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .unwrap();
-        let connections = Vec::new();
+        let _connections = Vec::new();
         let buf = Vec::with_capacity(1000);
 
         Self {
             udp_sock,
-            connections,
+            _connections,
             buf,
         }
     }
 
     pub fn receive(&mut self) {
         println!("{:?}", self.udp_sock.recv_from(&mut self.buf));
+    }
+}
+
+
+impl Default for Server {
+    fn default() -> Self {
+        Self::new()
     }
 }
