@@ -1,5 +1,9 @@
-use std::net::UdpSocket;
+use local::connect::server;
 
 fn main() {
-    println!("Hello, world!");
+    let mut serv = server::Server::new();
+
+    loop {
+        serv.receive();
+    }
 }
