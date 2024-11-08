@@ -1,5 +1,5 @@
 use super::addrs;
-use log::info;
+use log::{info, trace};
 use std::net::{TcpStream, UdpSocket};
 
 pub struct Server {
@@ -26,13 +26,10 @@ impl Server {
 
     pub fn receive_connections(&mut self) {
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
-            if let Ok(conn_request) =
-                serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size])
-            {
-                let port = conn_request.port();
-                info!("Received connection request from {addr} at port {port}");
-                let client_conn =
-                    TcpStream::connect((addr.ip(), port)).expect("Couldn't connect to client");
+            if serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
+                trace!("Received connection request from {addr}");
+                let client_conn = TcpStream::connect(addr).expect("Couldn't connect to client");
+                info!("Connected successfully to {addr}");
 
                 self.connections.push(client_conn);
             } else {
