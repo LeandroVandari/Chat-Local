@@ -1,4 +1,4 @@
-use std::cell::LazyCell;
+use std::sync::LazyLock;
 
 use serde::{Deserialize, Serialize};
 
@@ -10,7 +10,7 @@ pub mod server;
 #[derive(Debug, Serialize, Deserialize)]
 struct ConnectionRequest;
 
-const CONN_REQUEST: LazyCell<Vec<u8>> = LazyCell::new(|| {
+static CONN_REQUEST: LazyLock<Vec<u8>> = LazyLock::new(|| {
     serde_json::to_string(&ConnectionRequest)
         .unwrap()
         .as_bytes()
