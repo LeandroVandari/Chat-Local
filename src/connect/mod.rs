@@ -1,5 +1,3 @@
-use std::net::TcpListener;
-
 use serde::{Deserialize, Serialize};
 
 pub mod addrs;
