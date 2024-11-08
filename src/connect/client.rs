@@ -1,6 +1,5 @@
 use std::net::UdpSocket;
 use super::addrs;
-use serde;
 
 pub struct Client {
 }
