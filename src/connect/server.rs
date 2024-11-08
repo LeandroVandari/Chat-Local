@@ -4,7 +4,7 @@ use std::net::{TcpStream, UdpSocket};
 
 pub struct Server {
     udp_sock: UdpSocket,
-    _connections: Vec<TcpStream>,
+    connections: Vec<TcpStream>,
     buf: Vec<u8>,
 }
 
@@ -14,23 +14,26 @@ impl Server {
         udp_sock
             .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .unwrap();
-        let _connections = Vec::new();
+        let connections = Vec::new();
         let buf = vec![0; 1000];
 
         Self {
             udp_sock,
-            _connections,
+            connections,
             buf,
         }
     }
 
     pub fn receive_connections(&mut self) {
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
-            let msg = &self.buf[..size];
-            if msg == super::CONN_REQUEST {
-                info!("Received new connection request in multicast from {addr}.")
+            if let Ok(conn_request) = serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]) {
+                let port = conn_request.port();
+                info!("Received connection request from {addr} at port {port}");
+                let client_conn = TcpStream::connect((addr.ip(), port)).expect("Couldn't connect to client");
+
+                self.connections.push(client_conn);
             } else {
-                info!("Received message in multicast, but it wasn't a connection request...")
+                info!("Received multicast message but it is *not* a connection request");
             }
         }
     }
