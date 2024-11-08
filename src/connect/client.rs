@@ -1,4 +1,4 @@
-use log::debug;
+use log::{debug, trace};
 
 use super::addrs;
 use std::{net::{TcpListener, TcpStream, UdpSocket}, thread, time::Duration};
@@ -9,20 +9,24 @@ pub struct Client {
 
 impl Client {
     pub fn new() -> Self {
+        trace!("Binding to UDP socket...");
         let udp_sock = UdpSocket::bind((std::net::Ipv4Addr::UNSPECIFIED, 0))
             .expect("Couldn't create UDP Socket");
 
+        trace!("Joining multicast...");
         udp_sock
             .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .expect("Couldn't join multicast");
 
+        trace!("Creating TcpListener to connect to server...");
         let listener = TcpListener::bind((
             std::net::Ipv4Addr::UNSPECIFIED,
             udp_sock.local_addr().unwrap().port(),
         ))
         .expect("Couldn't create listener");
         listener.set_nonblocking(true).expect("Can't make a non-blocking TcpListener");
-    
+        
+
         Self::send_conn_request(&udp_sock);
         let mut before_accept = std::time::Instant::now();
         let (server_conn, _addr) = {
@@ -38,6 +42,7 @@ impl Client {
     }
 
     fn send_conn_request(udp_sock: &UdpSocket) {
+        trace!("Sending server connection request...");
         udp_sock
             .send_to(&super::CONN_REQUEST, addrs::SOCKET_ADDR)
             .expect("Couldn't send connection request to server");
