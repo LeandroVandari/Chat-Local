@@ -1,6 +1,6 @@
-use std::net::{TcpStream, UdpSocket};
 use super::addrs;
 use log::info;
+use std::net::{TcpStream, UdpSocket};
 
 pub struct Server {
     udp_sock: UdpSocket,
@@ -15,7 +15,7 @@ impl Server {
             .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .unwrap();
         let _connections = Vec::new();
-        let buf = vec![0;1000];
+        let buf = vec![0; 1000];
 
         Self {
             udp_sock,
@@ -35,7 +35,6 @@ impl Server {
         }
     }
 }
-
 
 impl Default for Server {
     fn default() -> Self {
