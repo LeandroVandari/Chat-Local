@@ -14,8 +14,11 @@ impl Client {
             .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .expect("Couldn't join multicast");
 
-        let listener = TcpListener::bind((std::net::Ipv4Addr::UNSPECIFIED, udp_sock.local_addr().unwrap().port()))
-            .expect("Couldn't create listener");
+        let listener = TcpListener::bind((
+            std::net::Ipv4Addr::UNSPECIFIED,
+            udp_sock.local_addr().unwrap().port(),
+        ))
+        .expect("Couldn't create listener");
         let request_json = serde_json::to_string(&super::ConnectionRequest).unwrap();
 
         udp_sock
@@ -24,7 +27,9 @@ impl Client {
 
         let (server_conn, _addr) = listener.accept().unwrap();
 
-        Self { _server_conn: server_conn }
+        Self {
+            _server_conn: server_conn,
+        }
     }
 }
 
