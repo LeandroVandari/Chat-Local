@@ -1,5 +1,5 @@
 use super::addrs;
-use log::{info, trace};
+use log::{debug, info, trace};
 use std::net::{TcpStream, UdpSocket};
 
 pub struct Server {
@@ -27,13 +27,13 @@ impl Server {
     pub fn receive_connections(&mut self) {
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
             if serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
-                trace!("Received connection request from {addr}");
+                info!("Received connection request from {addr}");
                 let client_conn = TcpStream::connect(addr).expect("Couldn't connect to client");
-                info!("Connected successfully to {addr}");
+                debug!("Connected successfully to {addr}");
 
                 self.connections.push(client_conn);
             } else {
-                info!("Received multicast message but it is *not* a connection request");
+                trace!("Received multicast message but it is *not* a connection request");
             }
         }
     }
