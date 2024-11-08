@@ -1,8 +1,8 @@
 use std::net::UdpSocket;
 use super::addrs;
+use serde;
 
 pub struct Client {
-    udp_sock: UdpSocket
 }
 
 impl Client {
@@ -12,9 +12,9 @@ impl Client {
         udp_sock.join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED).expect("Couldn't join multicast");
 
 
-        udp_sock.send_to(b"Hi", addrs::SOCKET_ADDR).unwrap();
+        udp_sock.send_to(super::CONN_REQUEST, addrs::SOCKET_ADDR).unwrap();
 
-        Self { udp_sock }
+        Self {  }
     }
 }
 

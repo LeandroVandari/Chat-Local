@@ -26,7 +26,12 @@ impl Server {
 
     pub fn receive_connections(&mut self) {
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
-            info!("Received message in multicast from {addr}: {}...", std::str::from_utf8(&self.buf[..size]).expect("Valid UTF-8 from device"));
+            let msg = &self.buf[..size];
+            if msg == super::CONN_REQUEST {
+                info!("Received new connection request in multicast from {addr}.")
+            } else {
+                info!("Received message in multicast, but it wasn't a connection request...")
+            }
         }
     }
 }
