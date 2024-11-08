@@ -26,8 +26,8 @@ impl Server {
         }
     }
 
-    pub fn receive_connections(&mut self) {
-        info!("Started receiving client connections...");
+    pub fn receive_connection(&mut self) {
+        trace!("Started receiving client connection...");
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
             if serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
                 info!("Received connection request from {addr}");
