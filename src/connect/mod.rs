@@ -12,13 +12,12 @@ struct ConnectionRequest(u16);
 
 impl ConnectionRequest {
     pub fn new(listener: &TcpListener) -> Self {
-        
         let port = listener.local_addr().unwrap().port();
-        
+
         Self(port)
     }
 
-    pub fn port(&self) -> u16{
+    pub fn port(&self) -> u16 {
         self.0
     }
 }
