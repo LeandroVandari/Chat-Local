@@ -12,7 +12,7 @@ impl Client {
         udp_sock.join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED).expect("Couldn't join multicast");
 
 
-        udp_sock.send_to(b"Hi", &addrs::SOCKET_ADDR).unwrap();
+        udp_sock.send_to(b"Hi", addrs::SOCKET_ADDR).unwrap();
 
         Self { udp_sock }
     }
