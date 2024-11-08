@@ -1,4 +1,4 @@
-use std::net::{SocketAddr, TcpStream, UdpSocket};
+use std::net::{TcpStream, UdpSocket};
 use super::addrs;
 
 pub struct Server {

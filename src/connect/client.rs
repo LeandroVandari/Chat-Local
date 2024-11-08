@@ -17,3 +17,9 @@ impl Client {
         Self { udp_sock }
     }
 }
+
+impl  Default for  Client {
+    fn default() -> Self {
+        Self::new()
+    }
+}
