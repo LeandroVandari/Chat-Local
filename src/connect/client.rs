@@ -2,7 +2,7 @@ use super::addrs;
 use std::net::{TcpListener, TcpStream, UdpSocket};
 
 pub struct Client {
-    server_conn: TcpStream,
+    _server_conn: TcpStream,
 }
 
 impl Client {
@@ -20,12 +20,12 @@ impl Client {
         let request_json = serde_json::to_string(&conn_request).unwrap();
 
         udp_sock
-            .send_to(request_json.as_bytes(), &addrs::SOCKET_ADDR)
+            .send_to(request_json.as_bytes(), addrs::SOCKET_ADDR)
             .expect("Couldn't send connection request to server");
 
         let (server_conn, _addr) = listener.accept().unwrap();
 
-        Self { server_conn }
+        Self { _server_conn: server_conn }
     }
 }
 
