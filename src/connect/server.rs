@@ -10,9 +10,11 @@ pub struct Server {
 
 impl Server {
     pub fn new() -> Self {
+
         trace!("Opening UDP socket...");
         let udp_sock = UdpSocket::bind(addrs::SOCKET_ADDR).unwrap();
         trace!("Joining multicast on {}", addrs::MULTICAST_IPV4);
+
         udp_sock
             .join_multicast_v4(&addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
             .unwrap();
@@ -27,7 +29,9 @@ impl Server {
     }
 
     pub fn receive_connection(&mut self) {
+
         info!("Ready to receive client connection...");
+
         if let Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
             if serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
                 info!("Received connection request from {addr}");

@@ -1,4 +1,4 @@
-use log::{debug, trace};
+use log::{debug, info, trace};
 
 use super::addrs;
 use std::{
@@ -45,6 +45,8 @@ impl Client {
                     debug!("2 seconds elapsed since connection request... Sending new one.")
                 }
             }
+
+            info!("Successfully connected to server!");
             accept_result.unwrap()
         };
 
