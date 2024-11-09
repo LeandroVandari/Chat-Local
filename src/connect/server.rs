@@ -12,15 +12,17 @@ use anyhow::{Context, Ok, Result};
 
 impl Server {
     /// Creates a [`Server`] that will bind to an UDP Socket to [`addrs::SOCKET_ADDR`] and join the multicast at [`addrs::MULTICAST_IPV4`]. Note that the server won't actually listen to new connections until [`receive_connection`](Server::receive_connection) is called.
-    /// 
+    ///
     /// # Errors
     /// This function will return [`Err`] anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`addrs::SOCKET_ADDR`].
     /// 2. Can't [join a multicast](UdpSocket::join_multicast_v4).
     pub fn new() -> Result<Self> {
-
         trace!("Opening UDP socket...");
-        let udp_sock = UdpSocket::bind(addrs::SOCKET_ADDR).context(format!("Couldn't bind to UDP socket: {}", addrs::SOCKET_ADDR))?;
+        let udp_sock = UdpSocket::bind(addrs::SOCKET_ADDR).context(format!(
+            "Couldn't bind to UDP socket: {}",
+            addrs::SOCKET_ADDR
+        ))?;
         trace!("Joining multicast on {}", addrs::MULTICAST_IPV4);
 
         udp_sock
@@ -28,20 +30,18 @@ impl Server {
             .context("Couldn't join multicast")?;
         let connections = Vec::new();
         let buf = vec![0; 1000];
-        Ok(
-        Self {
+        Ok(Self {
             udp_sock,
             connections,
             buf,
         })
     }
-    
+
     /// Receive and accept a single connection request from the multicast.
-    /// 
+    ///
     /// # Errors
     /// This will error if [`TcpStream`] can't connect to the client who requested the connection.
     pub fn receive_connection(&mut self) -> Result<()> {
-
         info!("Ready to receive client connection...");
 
         if let std::result::Result::Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
@@ -59,4 +59,3 @@ impl Server {
         Ok(())
     }
 }
-

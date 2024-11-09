@@ -1,21 +1,24 @@
 use log::{debug, info, trace};
 
 use super::addrs;
+use anyhow::{Context, Result};
 use std::{
     net::{TcpListener, TcpStream, UdpSocket},
     thread,
     time::Duration,
 };
-use anyhow::{Context,Result};
 
 pub struct Client {
     _server_conn: TcpStream,
 }
 
 impl Client {
-    #[allow(clippy::missing_panics_doc, reason="The only possible panic here is something that will never panic")]
+    #[allow(
+        clippy::missing_panics_doc,
+        reason = "The only possible panic here is something that will never panic"
+    )]
     /// Creates a new [`Client`]. It joins the multicast address through an UDP Socket, and sends requests to connect to a server until one answers.
-    /// 
+    ///
     /// # Errors
     /// This function will return [`Err`] anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`std::net::Ipv4Addr::UNSPECIFIED`].
@@ -35,7 +38,10 @@ impl Client {
         trace!("Creating TcpListener to connect to server...");
         let listener = TcpListener::bind((
             std::net::Ipv4Addr::UNSPECIFIED,
-            udp_sock.local_addr().context("Couldn't get UDP Socket's local address.")?.port(),
+            udp_sock
+                .local_addr()
+                .context("Couldn't get UDP Socket's local address.")?
+                .port(),
         ))
         .context("Couldn't create listener")?;
         listener
@@ -58,8 +64,9 @@ impl Client {
 
             info!("Successfully connected to server!");
 
-
-            accept_result.expect("Since we just looped until accept_result was not an err, it must now be valid.")
+            accept_result.expect(
+                "Since we just looped until accept_result was not an err, it must now be valid.",
+            )
         };
 
         Ok(Self {
