@@ -1,9 +1,9 @@
-use local::connect::server;
+use local::connect::Server;
 use log::{debug, error};
 fn main() {
     env_logger::init();
 
-    let mut server = match server::Server::new() {
+    let mut server = match Server::new() {
         Ok(server) => {
             debug!("Created server successfully.");
             server

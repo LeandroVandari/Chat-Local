@@ -19,8 +19,15 @@ impl Client {
     )]
     /// Creates a new [`Client`]. It joins the multicast address through an UDP Socket, and sends requests to connect to a server until one answers.
     ///
+    /// ```no_run
+    /// use local::connect::Client;
+    /// 
+    /// let my_client = Client::new()?;
+    /// # Ok::<(), anyhow::Error>(())
+    /// ```
+    /// 
     /// # Errors
-    /// This function will return [`Err`] anytime any of the networking code doesn't work. More specifically:
+    /// This function will return [`Err`](anyhow::Result) anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`std::net::Ipv4Addr::UNSPECIFIED`].
     /// 2. Can't [join a multicast](UdpSocket::join_multicast_v4).
     /// 3. Can't create a [`TcpListener`] and bind it to [`std::net::Ipv4Addr::UNSPECIFIED`].

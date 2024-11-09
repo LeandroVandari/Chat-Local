@@ -13,8 +13,15 @@ use anyhow::{Context, Ok, Result};
 impl Server {
     /// Creates a [`Server`] that will bind to an UDP Socket to [`addrs::SOCKET_ADDR`] and join the multicast at [`addrs::MULTICAST_IPV4`]. Note that the server won't actually listen to new connections until [`receive_connection`](Server::receive_connection) is called.
     ///
+    /// ```
+    /// use local::connect::Server;
+    /// 
+    /// let my_server = Server::new()?;
+    /// # Ok::<(), anyhow::Error>(())
+    /// ```
+    /// 
     /// # Errors
-    /// This function will return [`Err`] anytime any of the networking code doesn't work. More specifically:
+    /// This function will return [`Err`](anyhow::Result) anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`addrs::SOCKET_ADDR`].
     /// 2. Can't [join a multicast](UdpSocket::join_multicast_v4).
     pub fn new() -> Result<Self> {
@@ -41,6 +48,14 @@ impl Server {
     ///
     /// # Errors
     /// This will error if [`TcpStream`] can't connect to the client who requested the connection.
+    /// 
+    /// ```no_run
+    /// use local::connect::Server;
+    /// 
+    /// let mut server =  Server::new()?;
+    /// server.receive_connection();
+    /// # Ok::<(), anyhow::Error>(())
+    /// ```
     pub fn receive_connection(&mut self) -> Result<()> {
         info!("Ready to receive client connection...");
 
