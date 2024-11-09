@@ -10,8 +10,12 @@ pub mod server;
 #[derive(Debug, Serialize, Deserialize)]
 struct ConnectionRequest;
 
-const CONN_REQUEST: LazyCell<Vec<u8>> = LazyCell::new(|| serde_json::to_string(&ConnectionRequest).unwrap().as_bytes().to_vec());
-
+const CONN_REQUEST: LazyCell<Vec<u8>> = LazyCell::new(|| {
+    serde_json::to_string(&ConnectionRequest)
+        .unwrap()
+        .as_bytes()
+        .to_vec()
+});
 
 #[cfg(test)]
 mod tests {
@@ -25,8 +29,10 @@ mod tests {
     #[test]
     fn can_join_multicast() {
         let sock = UdpSocket::bind(super::addrs::SOCKET_ADDR).unwrap();
-        sock
-            .join_multicast_v4(&super::addrs::MULTICAST_IPV4, &std::net::Ipv4Addr::UNSPECIFIED)
-            .unwrap();
+        sock.join_multicast_v4(
+            &super::addrs::MULTICAST_IPV4,
+            &std::net::Ipv4Addr::UNSPECIFIED,
+        )
+        .unwrap();
     }
 }

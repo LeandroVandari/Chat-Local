@@ -1,7 +1,11 @@
 use log::{debug, trace};
 
 use super::addrs;
-use std::{net::{TcpListener, TcpStream, UdpSocket}, thread, time::Duration};
+use std::{
+    net::{TcpListener, TcpStream, UdpSocket},
+    thread,
+    time::Duration,
+};
 
 pub struct Client {
     _server_conn: TcpStream,
@@ -24,17 +28,25 @@ impl Client {
             udp_sock.local_addr().unwrap().port(),
         ))
         .expect("Couldn't create listener");
-        listener.set_nonblocking(true).expect("Can't make a non-blocking TcpListener");
-        
+        listener
+            .set_nonblocking(true)
+            .expect("Can't make a non-blocking TcpListener");
 
         Self::send_conn_request(&udp_sock);
         let mut before_accept = std::time::Instant::now();
         let (server_conn, _addr) = {
             let mut accept_result = listener.accept();
-            while accept_result.is_err() {thread::sleep(Duration::from_millis(10)); accept_result = listener.accept(); if before_accept.elapsed() > Duration::from_secs(2) {Self::send_conn_request(&udp_sock); before_accept=std::time::Instant::now(); debug!("2 seconds elapsed since connection request... Sending new one.")}}
+            while accept_result.is_err() {
+                thread::sleep(Duration::from_millis(10));
+                accept_result = listener.accept();
+                if before_accept.elapsed() > Duration::from_secs(2) {
+                    Self::send_conn_request(&udp_sock);
+                    before_accept = std::time::Instant::now();
+                    debug!("2 seconds elapsed since connection request... Sending new one.")
+                }
+            }
             accept_result.unwrap()
         };
-        
 
         Self {
             _server_conn: server_conn,
