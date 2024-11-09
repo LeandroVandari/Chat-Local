@@ -6,8 +6,8 @@ pub mod addrs;
 mod client;
 mod server;
 
-pub use server::Server;
 pub use client::Client;
+pub use server::Server;
 
 /// Represents a request for the [`Server`] to connect to. Contains a single [`u16`], which represents the port the [`Server`] should request a connection to.
 #[derive(Debug, Serialize, Deserialize)]

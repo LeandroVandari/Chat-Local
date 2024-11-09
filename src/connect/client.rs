@@ -21,11 +21,11 @@ impl Client {
     ///
     /// ```no_run
     /// use local::connect::Client;
-    /// 
+    ///
     /// let my_client = Client::new()?;
     /// # Ok::<(), anyhow::Error>(())
     /// ```
-    /// 
+    ///
     /// # Errors
     /// This function will return [`Err`](anyhow::Result) anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`std::net::Ipv4Addr::UNSPECIFIED`].

@@ -15,11 +15,11 @@ impl Server {
     ///
     /// ```
     /// use local::connect::Server;
-    /// 
+    ///
     /// let my_server = Server::new()?;
     /// # Ok::<(), anyhow::Error>(())
     /// ```
-    /// 
+    ///
     /// # Errors
     /// This function will return [`Err`](anyhow::Result) anytime any of the networking code doesn't work. More specifically:
     /// 1. An UDP Socket can't be created and binded to [`addrs::SOCKET_ADDR`].
@@ -48,10 +48,10 @@ impl Server {
     ///
     /// # Errors
     /// This will error if [`TcpStream`] can't connect to the client who requested the connection.
-    /// 
+    ///
     /// ```no_run
     /// use local::connect::Server;
-    /// 
+    ///
     /// let mut server =  Server::new()?;
     /// server.receive_connection();
     /// # Ok::<(), anyhow::Error>(())
