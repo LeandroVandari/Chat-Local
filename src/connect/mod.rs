@@ -1,3 +1,5 @@
+//! The module that handles the low-level connection details. Requires a [`Server`] and [`Client`]s that will connect to that server. The [`Client`]s discover the server automatically through multicasting.
+
 use std::sync::LazyLock;
 
 use serde::{Deserialize, Serialize};

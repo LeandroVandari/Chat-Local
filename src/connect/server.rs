@@ -11,7 +11,7 @@ pub struct Server {
 use anyhow::{Context, Ok, Result};
 
 impl Server {
-    /// Creates a [`Server`] that will bind an [UdpSocket] to [`addrs::SOCKET_ADDR`] and join the multicast at [`addrs::MULTICAST_IPV4`]. Note that the server won't actually listen to new connections until [`receive_connection`](Server::receive_connection) is called.
+    /// Creates a [`Server`] that will bind an [`UdpSocket`] to [`addrs::SOCKET_ADDR`] and join the multicast at [`addrs::MULTICAST_IPV4`]. Note that the server won't actually listen to new connections until [`receive_connection`](Server::receive_connection) is called.
     ///
     /// ```
     /// use local::connect::Server;

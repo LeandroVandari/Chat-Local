@@ -17,7 +17,7 @@ impl Client {
         clippy::missing_panics_doc,
         reason = "The only possible panic here is something that will never panic"
     )]
-    /// Creates a new [`Client`]. It joins the multicast address through an [UdpSocket], and sends requests to connect to a server until one answers.
+    /// Creates a new [`Client`]. It joins the multicast address through an [`UdpSocket`], and sends requests to connect to a server until one answers.
     ///
     /// ```no_run
     /// use local::connect::Client;
