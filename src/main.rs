@@ -5,6 +5,6 @@ fn main() {
     let mut serv = server::Server::new();
 
     loop {
-        serv.receive_connections();
+        serv.receive_connection();
     }
 }
