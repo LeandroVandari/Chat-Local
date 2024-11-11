@@ -1,5 +1,7 @@
 use log::{debug, info, trace};
 
+use crate::connect::SERVER_LIST;
+
 use super::addrs;
 use anyhow::{Context, Result};
 use std::{
@@ -10,6 +12,7 @@ use std::{
 
 pub struct Client {
     _server_conn: TcpStream,
+    buffer: Vec<u8>
 }
 
 impl Client {
@@ -34,6 +37,7 @@ impl Client {
     /// 4. Can't call [`TcpListener::set_nonblocking(true)`](TcpListener::set_nonblocking)
     pub fn new() -> Result<Self> {
         trace!("Binding to UDP socket...");
+        let mut buffer = vec![0;1000];
         let udp_sock = UdpSocket::bind((std::net::Ipv4Addr::UNSPECIFIED, 0))
             .context("Couldn't bind to UDP socket")?;
 
@@ -55,7 +59,8 @@ impl Client {
             .set_nonblocking(true)
             .context("Can't make a non-blocking TcpListener")?;
 
-        Self::send_conn_request(&udp_sock);
+        Self::send_server_list(&udp_sock);
+        //TODO: Somehow receive the available servers. (IDEA: Spin a new thread that keeps listening to it and have the server_conn as an optional?)
         let mut before_accept = std::time::Instant::now();
         let (server_conn, _addr) = {
             let mut accept_result = listener.accept();
@@ -78,6 +83,7 @@ impl Client {
 
         Ok(Self {
             _server_conn: server_conn,
+            buffer
         })
     }
 
@@ -86,5 +92,10 @@ impl Client {
         udp_sock
             .send_to(&super::CONN_REQUEST, addrs::SOCKET_ADDR)
             .expect("Couldn't send connection request to server");
+    }
+
+    fn send_server_list(udp_sock: &UdpSocket) {
+        trace!("Sending server list request...");
+        udp_sock.send_to(&SERVER_LIST, addrs::SOCKET_ADDR).expect("Couldn't request server list");
     }
 }

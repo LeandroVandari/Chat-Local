@@ -16,10 +16,14 @@ pub use server::Server;
 struct ConnectionRequest;
 
 static CONN_REQUEST: LazyLock<Vec<u8>> = LazyLock::new(|| {
-    serde_json::to_string(&ConnectionRequest)
-        .unwrap()
-        .as_bytes()
-        .to_vec()
+    bincode::serialize(&ConnectionRequest).unwrap()
+});
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ServerList;
+
+static SERVER_LIST: LazyLock<Vec<u8>> = LazyLock::new(|| {
+    bincode::serialize(&ServerList).unwrap()
 });
 
 #[cfg(test)]

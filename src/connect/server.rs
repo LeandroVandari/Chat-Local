@@ -60,7 +60,7 @@ impl Server {
         info!("Ready to receive client connection...");
 
         if let std::result::Result::Ok((size, addr)) = self.udp_sock.recv_from(&mut self.buf) {
-            if serde_json::from_slice::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
+            if bincode::deserialize::<super::ConnectionRequest>(&self.buf[..size]).is_ok() {
                 info!("Received connection request from {addr}");
                 let client_conn = TcpStream::connect(addr).context("Couldn't connect to client")?;
                 debug!("Connected successfully to {addr}");
