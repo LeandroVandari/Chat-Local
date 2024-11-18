@@ -12,7 +12,7 @@ use std::{
 
 pub struct Client {
     _server_conn: TcpStream,
-    buffer: Vec<u8>
+    buffer: Vec<u8>,
 }
 
 impl Client {
@@ -37,7 +37,7 @@ impl Client {
     /// 4. Can't call [`TcpListener::set_nonblocking(true)`](TcpListener::set_nonblocking)
     pub fn new() -> Result<Self> {
         trace!("Binding to UDP socket...");
-        let mut buffer = vec![0;1000];
+        let mut buffer = vec![0; 1000];
         let udp_sock = UdpSocket::bind((std::net::Ipv4Addr::UNSPECIFIED, 0))
             .context("Couldn't bind to UDP socket")?;
 
@@ -83,7 +83,7 @@ impl Client {
 
         Ok(Self {
             _server_conn: server_conn,
-            buffer
+            buffer,
         })
     }
 
@@ -96,6 +96,8 @@ impl Client {
 
     fn send_server_list(udp_sock: &UdpSocket) {
         trace!("Sending server list request...");
-        udp_sock.send_to(&SERVER_LIST, addrs::SOCKET_ADDR).expect("Couldn't request server list");
+        udp_sock
+            .send_to(&SERVER_LIST, addrs::SOCKET_ADDR)
+            .expect("Couldn't request server list");
     }
 }

@@ -11,20 +11,24 @@ mod server;
 pub use client::Client;
 pub use server::Server;
 
-/// Represents a request for the [`Server`] to connect to. Contains a single [`u16`], which represents the port the [`Server`] should request a connection to.
-#[derive(Debug, Serialize, Deserialize)]
-struct ConnectionRequest;
-
 static CONN_REQUEST: LazyLock<Vec<u8>> = LazyLock::new(|| {
-    bincode::serialize(&ConnectionRequest).unwrap()
+    bincode::serialize(&Message::Connection(ConnectionMessage::ConnectionRequest)).unwrap()
 });
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ServerList;
 
 static SERVER_LIST: LazyLock<Vec<u8>> = LazyLock::new(|| {
-    bincode::serialize(&ServerList).unwrap()
+    bincode::serialize(&Message::Connection(ConnectionMessage::ServerList)).unwrap()
 });
+
+#[derive(Debug, Serialize, Deserialize)]
+enum Message {
+    Connection(ConnectionMessage),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+enum ConnectionMessage {
+    ServerList,
+    ConnectionRequest,
+}
 
 #[cfg(test)]
 mod tests {
