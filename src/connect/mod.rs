@@ -10,10 +10,10 @@ mod server;
 
 pub use client::Client;
 pub use server::Server;
-
+/*
 static CONN_REQUEST: LazyLock<Vec<u8>> = LazyLock::new(|| {
     bincode::serialize(&Message::Connection(ConnectionMessage::ConnectionRequest)).unwrap()
-});
+}); */
 
 static SERVER_LIST: LazyLock<Vec<u8>> = LazyLock::new(|| {
     bincode::serialize(&Message::Connection(ConnectionMessage::ServerList)).unwrap()
@@ -27,7 +27,7 @@ enum Message {
 #[derive(Debug, Serialize, Deserialize)]
 enum ConnectionMessage {
     ServerList,
-    ConnectionRequest,
+    // ConnectionRequest,
 }
 
 #[cfg(test)]
