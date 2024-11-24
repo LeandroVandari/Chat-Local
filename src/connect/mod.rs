@@ -27,7 +27,7 @@ enum Message {
 #[derive(Debug, Serialize, Deserialize)]
 enum ConnectionMessage {
     ServerList,
-    // ConnectionRequest,
+    ServerInfo(server::ServerInfo), // ConnectionRequest,
 }
 
 #[cfg(test)]

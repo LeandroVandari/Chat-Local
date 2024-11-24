@@ -1,4 +1,5 @@
 use super::{addrs, Message};
+use core::str;
 use log::{debug, info, trace};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -88,14 +89,16 @@ impl Server {
                                                 info!("Received server list from {addr}");
                                                 udp_sock
                                                     .send_to(
-                                                        &bincode::serialize(&info).unwrap(),
+                                                        
+                                                        &bincode::serialize(&super::Message::Connection(crate::connect::ConnectionMessage::ServerInfo(info.clone()))).unwrap(),
                                                         addrs::SOCKET_ADDR,
                                                     )
                                                     .unwrap();
                                             }
+                                            super::ConnectionMessage::ServerInfo(_) => {}
                                         },
                                     },
-                                    Err(e) => debug!("Error deserializing message: {e}"),
+                                    Err(e) => debug!("Error deserializing message: {e}. Message: {:?}", str::from_utf8(&msg_buf[..size])),
                                 }
                             }
                             Err(e) => {
@@ -119,7 +122,7 @@ impl Server {
 }
 
 #[derive(Debug, Serialize, Clone, Deserialize)]
-pub struct ServerInfo {
+pub(super) struct ServerInfo {
     name: String,
     address: Option<SocketAddr>,
     password_required: bool,

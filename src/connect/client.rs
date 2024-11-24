@@ -106,10 +106,18 @@ impl ServerList {
                     }
                     if let Ok((size, addr)) = t_multicast.recv_from(&mut buf) {
                         info!("Received message from {addr} on multicast.");
-                        if let Ok(info) = bincode::deserialize::<ServerInfo>(&buf[..size]) {
-                            debug!("Message was server info. Logging it to trace...");
-                            info!("Server info received: {info:?}");
-                            t_servers.lock().unwrap().push(info);
+                        if let Ok(msg) = bincode::deserialize::<super::Message>(&buf[..size]) {
+                            info!("Received message on multicast.");
+                            match msg {
+                                super::Message::Connection(msg) => match msg {
+                                    super::ConnectionMessage::ServerList => (),
+                                    super::ConnectionMessage::ServerInfo(info) => {
+                                        debug!("Message was server info. Logging it to trace...");
+                                        info!("Server info received: {info:?}");
+                                        t_servers.lock().unwrap().push(info);
+                                    }
+                                },
+                            }
                         }
                     }
                 }
