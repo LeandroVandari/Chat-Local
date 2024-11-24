@@ -89,7 +89,6 @@ impl Server {
                                                 info!("Received server list from {addr}");
                                                 udp_sock
                                                     .send_to(
-                                                        
                                                         &bincode::serialize(&super::Message::Connection(crate::connect::ConnectionMessage::ServerInfo(info.clone()))).unwrap(),
                                                         addrs::SOCKET_ADDR,
                                                     )
