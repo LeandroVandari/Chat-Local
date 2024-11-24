@@ -49,4 +49,47 @@ mod tests {
             )
             .is_ok())
     }
+
+    #[test]
+    fn can_set_sock_to_nonblocking() {
+        let sock = UdpSocket::bind(super::addrs::SOCKET_ADDR).unwrap();
+        sock.join_multicast_v4(
+            &super::addrs::MULTICAST_IPV4,
+            &std::net::Ipv4Addr::UNSPECIFIED,
+        )
+        .unwrap();
+        assert!(sock.set_nonblocking(true).is_ok())
+    }
+
+    #[test]
+    fn can_send_message_in_multicast() {
+        let sock = UdpSocket::bind(super::addrs::SOCKET_ADDR).unwrap();
+        sock.join_multicast_v4(
+            &super::addrs::MULTICAST_IPV4,
+            &std::net::Ipv4Addr::UNSPECIFIED,
+        )
+        .unwrap();
+        assert!(sock
+            .send_to(&super::SERVER_LIST, super::addrs::SOCKET_ADDR)
+            .is_ok())
+    }
+
+    #[test]
+    fn can_receive_message_in_multicast() {
+        let mut buf = [0; 1000];
+        let sock = UdpSocket::bind(super::addrs::SOCKET_ADDR).unwrap();
+        sock.join_multicast_v4(
+            &super::addrs::MULTICAST_IPV4,
+            &std::net::Ipv4Addr::UNSPECIFIED,
+        )
+        .unwrap();
+        sock.set_nonblocking(true).unwrap();
+
+        let recv_result = sock.recv_from(&mut buf);
+
+        match recv_result {
+            Ok(_) => (),
+            Err(e) => assert!(matches!(e.kind(), std::io::ErrorKind::WouldBlock)),
+        }
+    }
 }

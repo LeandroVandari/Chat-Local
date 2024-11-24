@@ -73,7 +73,7 @@ impl Server {
                 .name(String::from("receive_messages"))
                 .spawn(move || {
                     let mut msg_buf = vec![0; 1000];
-                    let tcp_connect = TcpListener::bind("0.0.0.0:0").unwrap();
+                    let tcp_connect = TcpListener::bind("0.0.0.0:8989").unwrap();
                     tcp_connect.set_nonblocking(true).unwrap();
                     loop {
                         if shutdown.load(std::sync::atomic::Ordering::Relaxed) {
@@ -87,6 +87,7 @@ impl Server {
                                         Message::Connection(message) => match message {
                                             super::ConnectionMessage::ServerList => {
                                                 info!("Received server list from {addr}");
+                                                println!("{info:?}");
                                                 udp_sock
                                                     .send_to(
                                                         &bincode::serialize(&super::Message::Connection(crate::connect::ConnectionMessage::ServerInfo(info.clone()))).unwrap(),
